@@ -1,15 +1,16 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Home from './Pages/Home';
 import Navbar from './components/Navbar';
-import { useQuery, useQueryClient, QueryClientProvider } from '@tanstack/react-query';
+import CreateTodo from './Pages/CreateTodo';
+import { useQuery, useQueryClient, QueryClientProvider, QueryClient } from '@tanstack/react-query';
 
-const QueryClient = new useQueryClient();
+const queryClient = new QueryClient();
 
 function App() {
   
 
   return (
-    <QueryClientProvider client={QueryClient}>
+    <QueryClientProvider client={queryClient}>
      <Router>
       <Navbar />
 
