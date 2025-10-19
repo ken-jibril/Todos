@@ -27,17 +27,18 @@ function Home() {
     }
 
     return ( 
-        <div className="shadow-xl max-w-fit mx-auto mt-10 rounded-lg">
+        <>
             <h1 className="text-4xl text-center py-14 font-semibold text-blue-700">TaskList</h1>
-            {
-                data?.map((todo) => (
-                    <div key={todo.id} className="w-lg  mx-auto border-gray-300 py-4 px-6 hover:bg-gray-100 transition-all duration-300 cursor-pointer ">
-                        <p className="text-black font-semibold mt-2">{todo.title}</p>
-                    </div>
-                ))
-            }
-            
-        </div>
+                <div className="shadow-xl max-w-fit mx-auto mt-8 rounded-lg">
+                    {
+                        data?.map((todo) => (
+                            <div key={todo.id} className="w-lg  mx-auto border-gray-300 py-4 px-6 hover:bg-gray-100 transition-all duration-300 cursor-pointer ">
+                                <p className="text-black font-semibold mt-2">{todo.title}</p>
+                            </div>
+                        ))
+                    }   
+                </div>
+        </>
      );
 }
 
