@@ -6,6 +6,8 @@ function CreateTodo() {
   const [isCompleted, setIsCompleted] = useState(false);
   const [input, setInput] = useState('');
 
+  const token = import.meta.env.VITE_API_TOKEN;
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -20,7 +22,7 @@ function CreateTodo() {
     fetch('https://stub.muindetuva.com/api/todos', {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer 25|z098DRg1OmjYpQPKexZHjxEmM1o0ZVKaPYa2NDgcd3f09ba7',
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(newTodo)
@@ -48,7 +50,7 @@ function CreateTodo() {
           type="text"
           placeholder='Create a new task'
            value={todo}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => setTodo(e.target.value)}
           className='w-lg px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500'
           />
           
