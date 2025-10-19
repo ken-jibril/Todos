@@ -4,11 +4,14 @@ function Home() {
 
     const queryClient = useQueryClient();
 
+    const token = import.meta.env.VITE_API_TOKEN;
+
+
     const fetchTodos = async () => {
         const res = await fetch('https://stub.muindetuva.com/api/todos', {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer 25|z098DRg1OmjYpQPKexZHjxEmM1o0ZVKaPYa2NDgcd3f09ba7',
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             }
         });
@@ -29,11 +32,11 @@ function Home() {
     return ( 
         <>
             <h1 className="text-4xl text-center py-14 font-semibold text-blue-700">TaskList</h1>
-                <div className="shadow-xl max-w-fit mx-auto mt-8 rounded-lg">
+                <div className="max-w-fit mx-auto mt-8 rounded-lg">
                     {
                         data?.map((todo) => (
-                            <div key={todo.id} className="w-lg  mx-auto border-gray-300 py-4 px-6 hover:bg-gray-100 transition-all duration-300 cursor-pointer ">
-                                <p className="text-black font-semibold mt-2">{todo.title}</p>
+                            <div key={todo.id} className="w-lg mx-auto cursor-pointer">
+                                <p className="text-white font-semibold mt-2 shadow-xl bg-blue-800 px-2 py-3.5 rounded">{todo.title}</p>
                             </div>
                         ))
                     }   
