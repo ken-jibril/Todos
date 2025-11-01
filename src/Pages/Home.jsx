@@ -11,7 +11,7 @@ function Home() {
 
 
     const fetchTodos = async () => {
-        const res = await fetch('https://stub.muindetuva.com/api/todos', {
+        const res = await fetch('/.netlify/functions/fetchTodos', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -31,7 +31,7 @@ function Home() {
     }
 
     const deleteTodo = async (id) => {
-        const res = await fetch(`https://stub.muindetuva.com/api/todos/${id}`, {
+        const res = await fetch(`/.netlify/functions/fetchTodos?id=${id}`, {
           method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -44,7 +44,7 @@ function Home() {
     }
 
     const updateTodo = async (id, is_completed) => {
-        const res = await fetch(`https://stub.muindetuva.com/api/todos/${id}`, {
+        const res = await fetch(`/.netlify/functions/fetchTodos?id=${id}`, {
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${token}`,

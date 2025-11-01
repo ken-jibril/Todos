@@ -23,7 +23,7 @@ function CreateTodo() {
       is_completed: isCompleted
     };
 
-    fetch('https://stub.muindetuva.com/api/todos', {
+    fetch('/.netlify/functions/fetchTodos', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
