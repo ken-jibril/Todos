@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function CreateTodo() {
+
+  const navigate = useNavigate();
 
   const [todo, setTodo] = useState('');
   const [isCompleted, setIsCompleted] = useState(false);
@@ -40,6 +43,8 @@ function CreateTodo() {
     setTodo('');
     setIsCompleted(false);
     setInput('');
+
+    navigate('/');
 
   }
   return (
