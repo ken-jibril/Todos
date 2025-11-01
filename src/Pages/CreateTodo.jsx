@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function CreateTodo() {
@@ -8,6 +8,7 @@ function CreateTodo() {
   const [todo, setTodo] = useState('');
   const [isCompleted, setIsCompleted] = useState(false);
   const [input, setInput] = useState('');
+  const [isClearing, setIsClearing] = useState(false);
 
   const token = import.meta.env.VITE_API_TOKEN;
 
@@ -32,19 +33,23 @@ function CreateTodo() {
     })
     .then(response => response.json())
     .then(data => {
-      console.log('Success:', data);
-      alert('✅ Task added successfully!');
+    
+
+      setIsClearing(true);
+      setTimeout(() => {
+        setTodo('');
+        setIsCompleted(false);
+        setInput('');
+        setIsClearing(false);
+        navigate('/');
+
+      }, 400);
     })
     .catch((error) => {
       console.error('Error:', error);
       alert('❌ Failed to add task. Please try again.');
     });
 
-    setTodo('');
-    setIsCompleted(false);
-    setInput('');
-
-    navigate('/');
 
   }
   return (
