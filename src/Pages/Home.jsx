@@ -8,10 +8,12 @@ function Home() {
     const token = import.meta.env.VITE_API_TOKEN;
 
     const [deletindgId, setDeletingId] = useState(null);
+    const [isSuccessful, setIsSuccessful] = useState(false);
+    const [isRemoved, setIsRemoved] = useState(false);
 
 
     const fetchTodos = async () => {
-        const res = await fetch('/.netlify/functions/fetchTodos', {
+        const res = await fetch('https://stub.muindetuva.com/api/todos', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -31,7 +33,7 @@ function Home() {
     }
 
     const deleteTodo = async (id) => {
-        const res = await fetch(`/.netlify/functions/fetchTodos?id=${id}`, {
+        const res = await fetch(`https://stub.muindetuva.com/api/todos/${id}`, {
           method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -44,7 +46,7 @@ function Home() {
     }
 
     const updateTodo = async (id, is_completed) => {
-        const res = await fetch(`/.netlify/functions/fetchTodos?id=${id}`, {
+        const res = await fetch(`https://stub.muindetuva.com/api/todos/${id}`, {
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -64,6 +66,10 @@ function Home() {
                 todo.id === id ? { ...todo, is_completed } : todo
             )
             );
+            if (is_completed) {
+                setIsSuccessful(true);
+                setTimeout(() => setIsSuccessful(false), 2000);
+            }
         },
         });
     
@@ -73,6 +79,10 @@ function Home() {
             queryClient.setQueryData(['todos'], (oldTodos) => 
              oldTodos.filter((todo) => todo.id !== deletedId)
             );
+            if (deletedId) {
+                setIsRemoved(true);
+                setTimeout(() => setIsRemoved(false), 2000);
+            }
         },
     });
 
@@ -86,6 +96,12 @@ function Home() {
     return ( 
         <>
             <h1 className="text-4xl text-center py-14 font-semibold text-blue-700">TaskList</h1>
+            {isSuccessful && (
+                <p className="absolute right-8 top-24 rounded-md border-l-4 border-green-500 shadow-md transition-all duration-500 bg-white text-green-600 font-semibold my-2 mx-2 py-4 px-3">✅ Task completed successfully!</p>
+            )}
+            {isRemoved && (
+                <p className="absolute right-8 top-24 rounded-md border-l-4 border-green-500 shadow-md transition-all duration-500 bg-white text-green-600 font-semibold my-2 mx-2 py-4 px-3">🗑️ Task removed successfully!</p>
+            )}
                 <div className="max-w-fit mx-auto mt-5 rounded-lg gap-1 flex flex-col space-y-2">
                     {
                         data?.map((todo) => (
