@@ -8,7 +8,7 @@ function CreateTodo() {
   const [todo, setTodo] = useState('');
   const [isCompleted, setIsCompleted] = useState(false);
   const [input, setInput] = useState('');
-  const [isClearing, setIsClearing] = useState(false);
+
 
   const token = import.meta.env.VITE_API_TOKEN;
 
@@ -23,7 +23,7 @@ function CreateTodo() {
       is_completed: isCompleted
     };
 
-    fetch('/.netlify/functions/fetchTodos', {
+    fetch('https://stub.muindetuva.com/api/todos', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -35,15 +35,13 @@ function CreateTodo() {
     .then(data => {
     
 
-      setIsClearing(true);
       setTimeout(() => {
         setTodo('');
         setIsCompleted(false);
         setInput('');
-        setIsClearing(false);
         navigate('/');
 
-      }, 400);
+      });
     })
     .catch((error) => {
       console.error('Error:', error);
