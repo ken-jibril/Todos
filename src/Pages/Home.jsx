@@ -1,5 +1,7 @@
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { collection, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase.config.js';
 
 function Home() {
 
@@ -13,15 +15,13 @@ function Home() {
 
 
     const fetchTodos = async () => {
-        const res = await fetch('https://stub.muindetuva.com/api/todos', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-        return res.json();
-    }    
+    const querySnapshot = await getDocs(collection(db, 'todos'));
+    return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+    }
+
     const {data, isLoading, isError} = useQuery({
         queryKey: ['todos'],
         queryFn: fetchTodos
@@ -33,30 +33,14 @@ function Home() {
     }
 
     const deleteTodo = async (id) => {
-        const res = await fetch(`https://stub.muindetuva.com/api/todos/${id}`, {
-          method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!res.ok) throw new Error('Failed to delete todo');
-        return id;
+    await deleteDoc(doc(db, 'todos', id));
+    return id;
     }
 
     const updateTodo = async (id, is_completed) => {
-        const res = await fetch(`https://stub.muindetuva.com/api/todos/${id}`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ is_completed })
-        });
-        if (!res.ok) throw new Error('Failed to update todo');
-        return { id, is_completed };
-    }
+    await updateDoc(doc(db, 'todos', id), { is_completed });
+    return { id, is_completed };
+   }
 
         const { mutate: toggleTodo } = useMutation({
         mutationFn: ({ id, is_completed }) => updateTodo(id, is_completed),
