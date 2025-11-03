@@ -1,5 +1,7 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../firebase.config.js';
 
 function CreateTodo() {
 
@@ -10,9 +12,9 @@ function CreateTodo() {
   const [input, setInput] = useState('');
 
 
-  const token = import.meta.env.VITE_API_TOKEN;
+  // const token = import.meta.env.VITE_API_TOKEN;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!todo.trim()) return alert('❌ Task cannot be empty!');
@@ -20,38 +22,26 @@ function CreateTodo() {
     const newTodo = {
       title: todo,
       text: input,
-      is_completed: isCompleted
+      is_completed: isCompleted,
+      createdAt: new Date()
     };
 
-    fetch('https://stub.muindetuva.com/api/todos', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(newTodo)
-    })
-    .then(response => response.json())
-    .then(data => {
-    
-
-      setTimeout(() => {
-        setTodo('');
-        setIsCompleted(false);
-        setInput('');
-        navigate('/');
-
-      });
-    })
-    .catch((error) => {
+    try {
+      await addDoc(collection(db, 'todos'), newTodo);
+      
+      setTodo('');
+      setIsCompleted(false);
+      setInput('');
+      navigate('/');
+      
+    } catch (error) {
       console.error('Error:', error);
       alert('❌ Failed to add task. Please try again.');
-    });
-
-
+    }
   }
-  return (
-    <div className="flex items-center justify-center flex-col">
+
+return (
+  <div className="flex items-center justify-center flex-col">
       <form onSubmit={handleSubmit} className='shadow-xl max-w-fit mx-auto mt-10 rounded-lg p-6 flex flex-col gap-4 '>
           <label htmlFor="task" className='font-semibold'>Enter New Task</label>
           <input
