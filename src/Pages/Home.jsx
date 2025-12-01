@@ -4,59 +4,54 @@ import { collection, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firesto
 import { db } from '../firebase.config.js';
 
 function Home() {
-
     const queryClient = useQueryClient();
-
-    const token = import.meta.env.VITE_API_TOKEN;
 
     const [deletindgId, setDeletingId] = useState(null);
     const [isSuccessful, setIsSuccessful] = useState(false);
     const [isRemoved, setIsRemoved] = useState(false);
 
-
     const fetchTodos = async () => {
-    const querySnapshot = await getDocs(collection(db, 'todos'));
-    return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    }));
+        const querySnapshot = await getDocs(collection(db, 'todos'));
+        return querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
     }
 
-    const {data, isLoading, isError} = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey: ['todos'],
         queryFn: fetchTodos
-    })
-
+    });
 
     const toggleCompleted = (id, is_completed) => {
         toggleTodo({ id, is_completed: !is_completed });
     }
 
     const deleteTodo = async (id) => {
-    await deleteDoc(doc(db, 'todos', id));
-    return id;
+        await deleteDoc(doc(db, 'todos', id));
+        return id;
     }
 
     const updateTodo = async (id, is_completed) => {
-    await updateDoc(doc(db, 'todos', id), { is_completed });
-    return { id, is_completed };
-   }
+        await updateDoc(doc(db, 'todos', id), { is_completed });
+        return { id, is_completed };
+    }
 
-        const { mutate: toggleTodo } = useMutation({
+    const { mutate: toggleTodo } = useMutation({
         mutationFn: ({ id, is_completed }) => updateTodo(id, is_completed),
         onSuccess: ({ id, is_completed }) => {
             queryClient.setQueryData(['todos'], (oldTodos) =>
-            oldTodos.map((todo) =>
-                todo.id === id ? { ...todo, is_completed } : todo
-            )
+                oldTodos.map((todo) =>
+                    todo.id === id ? { ...todo, is_completed } : todo
+                )
             );
             if (is_completed) {
                 setIsSuccessful(true);
                 setTimeout(() => setIsSuccessful(false), 2000);
             }
         },
-        });
-    
+    });
+
     const { mutate: removeTodo, isPending } = useMutation({
         mutationFn: deleteTodo,
         onSuccess: (deletedId) => {
@@ -79,46 +74,56 @@ function Home() {
 
     return ( 
         <>
-            <h1 className="text-4xl text-center py-14 font-semibold text-blue-700">TaskList</h1>
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl text-center py-14 font-semibold text-blue-700">TaskList</h1>
+
+            {/* Success / Remove Notifications */}
             {isSuccessful && (
-                <p className="absolute right-8 top-24 rounded-md border-l-4 border-green-500 shadow-md transition-all duration-500 bg-white text-green-600 font-semibold my-2 mx-2 py-4 px-3">✅ Task completed successfully!</p>
+                <p className="fixed top-4 left-1/2 transform -translate-x-1/2 rounded-md border-l-4 border-green-500 shadow-md bg-white text-green-600 font-semibold py-3 px-4 z-50 transition-all duration-500">
+                    ✅ Task completed successfully!
+                </p>
             )}
             {isRemoved && (
-                <p className="absolute right-8 top-24 rounded-md border-l-4 border-green-500 shadow-md transition-all duration-500 bg-white text-green-600 font-semibold my-2 mx-2 py-4 px-3">🗑️ Task removed successfully!</p>
+                <p className="fixed top-4 left-1/2 transform -translate-x-1/2 rounded-md border-l-4 border-green-500 shadow-md bg-white text-green-600 font-semibold py-3 px-4 z-50 transition-all duration-500">
+                    🗑️ Task removed successfully!
+                </p>
             )}
-                <div className="max-w-fit mx-auto mt-5 rounded-lg gap-1 flex flex-col space-y-2">
-                    {
-                        data?.map((todo) => (
-                            console.log(todo.title, todo.is_completed),
 
-                            <div key={todo.id} className="w-lg mx-auto cursor-pointer flex items-center justify-between bg-blue-800 text-white font-semibold px-4 py-2.5 rounded ">
-                               <div className="flex items-center gap-1">
-                                    <input
-                                    type="checkbox"
-                                    checked={!!todo.is_completed}
-                                    onChange={() => toggleCompleted(todo.id, todo.is_completed)}
-                                    className="w-6 h-6 accent-blue-600 mr-4 cursor-pointer"       
-                                    />
-                                    <span className={`text-white font-semibold mb-2 px-2 py-3 rounded ${todo.is_completed ? "line-through text-gray-500" : ""}`}>{todo.title}</span>
-                               </div>
-                                <button 
-                                  onClick={() => {
-                                    setDeletingId(todo.id);
-                                    removeTodo(todo.id, {
-                                        onSettled: () => setDeletingId(null),
-                                    })
-                                  }}
-                                  disabled={deletindgId === todo.id}
-                                  className=" text-white font-semibold px-2 py-1.5 mt-2 rounded hover:bg-white cursor-pointer"
-                                >
-                                  {deletindgId === todo.id ? '...' : '🗑'}
-                                </button>
-                            </div>
-                        ))
-                    }   
-                </div>
+            {/* Todos List Container */}
+            <div className="max-w-xl w-full mx-auto mt-5 rounded-lg flex flex-col gap-2 px-4 sm:px-6">
+                {data?.map((todo) => (
+                    <div key={todo.id} className="w-full flex flex-col sm:flex-row items-center sm:justify-between bg-blue-800 text-white font-semibold px-4 py-3 rounded">
+                        {/* Checkbox + Title */}
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
+                            <input
+                                type="checkbox"
+                                checked={!!todo.is_completed}
+                                onChange={() => toggleCompleted(todo.id, todo.is_completed)}
+                                className="w-5 h-5 accent-blue-600 mr-2"
+                            />
+                            <span className={`text-white ${todo.is_completed ? "line-through text-gray-300" : ""}`}>
+                                {todo.title}
+                            </span>
+                        </div>
+
+                        {/* Delete Button */}
+                        <button 
+                          onClick={() => {
+                            setDeletingId(todo.id);
+                            removeTodo(todo.id, {
+                                onSettled: () => setDeletingId(null),
+                            })
+                          }}
+                          disabled={deletindgId === todo.id}
+                          className="text-white px-2 py-1 mt-2 sm:mt-0 rounded hover:bg-white hover:text-blue-800 transition-all"
+                        >
+                          {deletindgId === todo.id ? '...' : '🗑'}
+                        </button>
+                    </div>
+                ))}
+            </div>
         </>
-     );
+    );
 }
 
 export default Home;
