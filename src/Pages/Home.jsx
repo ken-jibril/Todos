@@ -94,43 +94,44 @@ function Home() {
             )}
 
             {/* Todos List */}
-            <div className="max-w-xl w-full mx-auto mt-5 flex flex-col gap-3 px-4 sm:px-6">
-                {data?.map((todo) => (
-                    <div
-                        key={todo.id}
-                        className="w-full flex flex-col sm:flex-row items-center justify-between bg-blue-800 text-white font-semibold px-4 py-3 rounded"
-                    >
-                        {/* Left side: Checkbox + Title */}
-                        <div className="flex items-center gap-2 w-full sm:w-auto">
-                            <input
-                                type="checkbox"
-                                checked={!!todo.is_completed}
-                                onChange={() => toggleCompleted(todo.id, todo.is_completed)}
-                                className="w-5 h-5 accent-blue-600 mr-2"
-                            />
-                            <span className={`text-white ${todo.is_completed ? "line-through text-gray-300" : ""}`}>
-                                {todo.title}
-                            </span>
-                        </div>
+<div className="max-w-xl w-full mx-auto mt-5 flex flex-col gap-3 px-4 sm:px-6">
+  {data?.map((todo) => (
+    <div
+      key={todo.id}
+      className="w-full flex flex-col sm:flex-row items-center justify-between bg-blue-800 text-white font-semibold px-4 py-3 rounded"
+    >
+      {/* Left side: Checkbox + Title */}
+      <div className="flex items-center gap-2 w-full sm:flex-1">
+          <input
+              type="checkbox"
+              checked={!!todo.is_completed}
+              onChange={() => toggleCompleted(todo.id, todo.is_completed)}
+              className="w-5 h-5 accent-blue-600 mr-2"
+          />
+          <span className={`text-white ${todo.is_completed ? "line-through text-gray-300" : ""}`}>
+              {todo.title}
+          </span>
+      </div>
 
-                        {/* Right side: Delete button */}
-                        <div className="mt-2 sm:mt-0 sm:ml-4 flex-shrink-0">
-                            <button
-                                onClick={() => {
-                                    setDeletingId(todo.id);
-                                    removeTodo(todo.id, {
-                                        onSettled: () => setDeletingId(null),
-                                    });
-                                }}
-                                disabled={deletindgId === todo.id}
-                                className="text-white px-2 py-1 rounded hover:bg-white hover:text-blue-800 transition-all"
-                            >
-                                {deletindgId === todo.id ? '...' : '🗑'}
-                            </button>
-                        </div>
-                    </div>
-                ))}
-            </div>
+      {/* Right side: Delete button */}
+      <div className="mt-2 sm:mt-0 flex-shrink-0 sm:ml-4">
+          <button
+              onClick={() => {
+                  setDeletingId(todo.id);
+                  removeTodo(todo.id, {
+                      onSettled: () => setDeletingId(null),
+                  });
+              }}
+              disabled={deletindgId === todo.id}
+              className="text-white px-2 py-1 rounded hover:bg-white hover:text-blue-800 transition-all"
+          >
+              {deletindgId === todo.id ? '...' : '🗑'}
+          </button>
+      </div>
+    </div>
+  ))}
+</div>
+
         </>
     );
 }
