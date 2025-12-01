@@ -79,48 +79,46 @@ function Home() {
 
             {/* Success / Remove Notifications */}
             {isSuccessful && (
-                <p className="fixed top-4 left-1/2 transform -translate-x-1/2 rounded-md border-l-4 border-green-500 shadow-md bg-white text-green-600 font-semibold py-3 px-4 z-50 transition-all duration-500">
+                <p className="fixed top-20 sm:top-24 left-1/2 transform -translate-x-1/2 rounded-md border-l-4 border-green-500 shadow-md bg-white text-green-600 font-semibold py-3 px-4 z-50 transition-all duration-500">
                     ✅ Task completed successfully!
                 </p>
             )}
             {isRemoved && (
-                <p className="fixed top-4 left-1/2 transform -translate-x-1/2 rounded-md border-l-4 border-green-500 shadow-md bg-white text-green-600 font-semibold py-3 px-4 z-50 transition-all duration-500">
+                <p className="fixed top-20 sm:top-24 left-1/2 transform -translate-x-1/2 rounded-md border-l-4 border-green-500 shadow-md bg-white text-green-600 font-semibold py-3 px-4 z-50 transition-all duration-500">
                     🗑️ Task removed successfully!
                 </p>
             )}
 
             {/* Todos List Container */}
-            <div className="max-w-xl w-full mx-auto mt-5 rounded-lg flex flex-col gap-2 px-4 sm:px-6">
-                {data?.map((todo) => (
-                    <div key={todo.id} className="w-full flex flex-col sm:flex-row items-center sm:justify-between bg-blue-800 text-white font-semibold px-4 py-3 rounded">
-                        {/* Checkbox + Title */}
-                        <div className="flex items-center gap-2 w-full sm:w-auto">
-                            <input
-                                type="checkbox"
-                                checked={!!todo.is_completed}
-                                onChange={() => toggleCompleted(todo.id, todo.is_completed)}
-                                className="w-5 h-5 accent-blue-600 mr-2"
-                            />
-                            <span className={`text-white ${todo.is_completed ? "line-through text-gray-300" : ""}`}>
-                                {todo.title}
-                            </span>
-                        </div>
+            <div key={todo.id} className="w-full flex flex-col sm:flex-row items-center justify-between bg-blue-800 text-white font-semibold px-4 py-3 rounded">
+  {/* Left side: Checkbox + Title */}
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+                <input
+                    type="checkbox"
+                    checked={!!todo.is_completed}
+                    onChange={() => toggleCompleted(todo.id, todo.is_completed)}
+                    className="w-5 h-5 accent-blue-600 mr-2"
+                />
+                <span className={`text-white ${todo.is_completed ? "line-through text-gray-300" : ""}`}>
+                    {todo.title}
+                </span>
+            </div>
 
-                        {/* Delete Button */}
-                        <button 
-                          onClick={() => {
-                            setDeletingId(todo.id);
-                            removeTodo(todo.id, {
-                                onSettled: () => setDeletingId(null),
-                            })
-                          }}
-                          disabled={deletindgId === todo.id}
-                          className="text-white px-2 py-1 mt-2 sm:mt-0 rounded hover:bg-white hover:text-blue-800 transition-all"
-                        >
-                          {deletindgId === todo.id ? '...' : '🗑'}
-                        </button>
-                    </div>
-                ))}
+            {/* Right side: Delete button */}
+            <div className="mt-2 sm:mt-0 sm:ml-4 flex-shrink-0">
+                <button 
+                    onClick={() => {
+                    setDeletingId(todo.id);
+                    removeTodo(todo.id, {
+                        onSettled: () => setDeletingId(null),
+                    })
+                    }}
+                    disabled={deletindgId === todo.id}
+                    className="text-white px-2 py-1 rounded hover:bg-white hover:text-blue-800 transition-all"
+                >
+                    {deletindgId === todo.id ? '...' : '🗑'}
+                </button>
+            </div>
             </div>
         </>
     );
